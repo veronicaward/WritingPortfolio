@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidden Connections — Veronica Ward</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,700;0,800;1,400;1,500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            font-size: clamp(16px, 1.4vw, 22px);
+            scroll-behavior: smooth;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #fff;
+            color: #111;
+            font-family: 'EB Garamond', Garamond, 'Times New Roman', serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ── TOP BAR ── */
+        header {
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 32px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .site-name {
+            font-size: 1.5rem;
+            font-weight: 900;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        nav {
+            display: flex;
+            gap: 28px;
+            font-size: 1rem;
+            letter-spacing: 0.03em;
+        }
+
+        nav a {
+            opacity: 0.5;
+            transition: opacity 0.2s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            opacity: 1;
+        }
+
+        /* ── BOOK LAYOUT ── */
+        main {
+            padding: 48px 0 120px;
+        }
+
+        .book {
+            max-width: 740px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        .book-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .back-btn {
+            font-size: 0.85rem;
+            opacity: 0.4;
+            transition: opacity 0.2s;
+            line-height: 1;
+        }
+
+        .back-btn:hover {
+            opacity: 1;
+        }
+
+        .book-title {
+            font-size: 0.85rem;
+            letter-spacing: 0.04em;
+            opacity: 0.4;
+        }
+
+        @media (min-width: 1101px) {
+            .book-header { display: none; }
+        }
+
+        .chapter-number {
+            font-size: 3.5rem;
+            font-weight: 400;
+            text-align: center;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .chapter-title {
+            font-size: 1.1rem;
+            font-style: italic;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .chapter-subtitle {
+            font-size: 0.75rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            text-align: center;
+            opacity: 0.5;
+            margin-bottom: 52px;
+        }
+
+        .chapter-body p {
+            font-size: 1rem;
+            line-height: 1.85;
+            margin-bottom: 1.4em;
+            text-indent: 2em;
+            text-align: justify;
+        }
+
+        .chapter-body p:first-child {
+            text-indent: 0;
+        }
+
+        .chapter-body p:first-child::first-letter {
+            font-size: 4em;
+            font-weight: 700;
+            float: left;
+            line-height: 0.75;
+            margin-right: 0.06em;
+            margin-top: 0.08em;
+        }
+
+        .chapter {
+            margin-bottom: 96px;
+        }
+
+        .section-break {
+            text-align: center;
+            margin: 40px 0;
+            opacity: 0.3;
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+        }
+
+        .chapter-end {
+            text-align: center;
+            margin-top: 64px;
+            opacity: 0.2;
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+        }
+
+        /* ── TABLE OF CONTENTS ── */
+        .toc {
+            position: fixed;
+            left: 40px;
+            top: 110px;
+            width: 150px;
+            max-height: calc(100vh - 130px);
+            overflow-y: auto;
+        }
+
+        .toc-back {
+            display: block;
+            font-size: 0.8rem;
+            opacity: 0.4;
+            margin-bottom: 16px;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .toc-back:hover {
+            opacity: 1;
+        }
+
+        .toc-list {
+            list-style: none;
+        }
+
+        .toc-list li a {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            padding: 2.5px 0;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+        }
+
+        .toc-list li a:hover,
+        .toc-list li a.active {
+            opacity: 1;
+        }
+
+        .toc-num {
+            font-size: 0.72rem;
+            width: 1.4em;
+            flex-shrink: 0;
+            opacity: 0.7;
+        }
+
+        .toc-name {
+            font-size: 0.78rem;
+            font-style: italic;
+        }
+
+        .toc-year {
+            font-size: 0.68rem;
+            opacity: 0.55;
+            margin-left: 2px;
+        }
+
+        .toc-label {
+            display: none;
+        }
+
+        @media (max-width: 1100px) {
+            .toc { display: none; }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .header-inner {
+                padding: 24px 28px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            nav {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .book {
+                padding: 0 28px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-inner">
+            <a href="index.html" class="site-name">Veronica Ward</a>
+            <nav>
+                <a href="index.html" class="active">Books</a>
+                <a href="about.html">About</a>
+                <a href="publicity.html">Publicity</a>
+                <a href="contact.html">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="book">
+
+            <div class="book-header" id="top">
+                <a href="index.html" class="back-btn">←</a>
+                <a href="index.html" class="book-title">Hidden Connections</a>
+            </div>
+
+            <div class="toc">
+                <a href="index.html" class="toc-back">← Hidden Connections</a>
+                <ol class="toc-list">
+                    <li><a href="#chapter-1"><span class="toc-num">1</span><span class="toc-name">Lily</span><span class="toc-year">2037</span></a></li>
+                    <li><a href="#chapter-2"><span class="toc-num">2</span><span class="toc-name">Alice</span><span class="toc-year">2028</span></a></li>
+                    <li><a href="#chapter-3"><span class="toc-num">3</span><span class="toc-name">Ryan</span><span class="toc-year">2028</span></a></li>
+                    <li><a href="#chapter-4"><span class="toc-num">4</span><span class="toc-name">Steve</span><span class="toc-year">2028</span></a></li>
+                    <li><a href="#chapter-5"><span class="toc-num">5</span><span class="toc-name">Alice</span><span class="toc-year">2031</span></a></li>
+                    <li><a href="#chapter-6"><span class="toc-num">6</span><span class="toc-name">Parker</span><span class="toc-year">2033</span></a></li>
+                    <li><a href="#chapter-7"><span class="toc-num">7</span><span class="toc-name">Alice</span><span class="toc-year">2036</span></a></li>
+                    <li><a href="#chapter-8"><span class="toc-num">8</span><span class="toc-name">Steve</span><span class="toc-year">2037</span></a></li>
+                    <li><a href="#chapter-9"><span class="toc-num">9</span><span class="toc-name">Daniel</span><span class="toc-year">2037</span></a></li>
+                    <li><a href="#chapter-10"><span class="toc-num">10</span><span class="toc-name">Parker</span><span class="toc-year">2037</span></a></li>
+                    <li><a href="#chapter-11"><span class="toc-num">11</span><span class="toc-name">Lily</span><span class="toc-year">2037</span></a></li>
+                    <li><a href="#chapter-12"><span class="toc-num">12</span><span class="toc-name">Parker</span><span class="toc-year">2037</span></a></li>
+                    <li><a href="#chapter-13"><span class="toc-num">13</span><span class="toc-name">Lily</span><span class="toc-year">2037</span></a></li>
+                </ol>
+            </div>
+
+            <div class="chapter" id="chapter-1">
+                <div class="chapter-number">1</div>
+                <div class="chapter-title">Lily</div>
+                <div class="chapter-subtitle">2037</div>
+                <div class="chapter-body">
+                    <p>Prostitution was legalized in 2036. By the end of 2037, a brothel called the Velvet had opened next door to The Country Buffet where Lily worked.</p>
+                    <p>The official argument for legalization had been safety, regulation, STI screenings, healthcare. The end of sex trafficking. It proved some of that, in data. The reality was that it also made a small number of wealthy people even wealthier, the same ones who'd lobbied for it and were already getting paid back double what they'd put in.</p>
+                    <p>Lily stared at the Velvet's neon sign from across the street when Gary, the manager, called her into the back office at the end of her shift. He sat across from her and wouldn't look up. He gestured toward the kitchen and said something about efficiency and the future of the food service industry. The kiosks had gone in months ago. Then the automated inventory tracking system. She'd watched it happen in real time and understood what was coming. They all did. Rumor had it they only planned to keep a small handful of employees, the ones without complications. Lily was eight months pregnant. She understood.</p>
+                    <p>She wouldn't miss the job, but the food was free and the pay was steady. Gary confirmed her address and told her the final check would come in the mail. She collected her things and walked out slowly.</p>
+                    <p>She pushed through the front door. The parking lot was empty. The cold came in through the gap in her coat she couldn't close anymore. She stood there for a moment, staring at the gray sky. She felt lost, directionless. The baby shifted, it did that when she stood still for too long, urging her to move forward. She looked up at the Velvet's sign again. It still looked brand new, glowing neon pink, emitting a soft humming sound.</p>
+                    <p>She had no one to call. Her mother had committed suicide when Lily was eighteen. She'd never known her father. The way her mother described it, "He ran off the second things got hard. The only thing he cared about was himself." Her sister Alice had been in prison since Lily was young and they'd lost touch years ago. The baby's father Matt left four months ago, the night she refused to go to the underground clinic.</p>
+                    <p>He picked her up for what she thought was a dinner date, driving in silence for fifteen minutes. She knew where they were going without him saying. All the underground clinics were hidden in dark places just like this. No signs. Just another ambiguous building next to other abandoned buildings. When he parked, he turned to her with a desperate look on his face.</p>
+                    <p>She couldn't bring herself to do it. Abortion had been criminalized in 2030 and she knew too much about what prison looked like from Alice to risk getting caught.</p>
+                    <p>"I can't take care of a baby right now. I barely get by on my own, you too. This is the best option for us right now." Matt said, nodding in agreement with himself.</p>
+                    <p>"No." Lily said, staring directly at him. She'd argued with her own mother enough to know anything extra would have been a waste of time. He could have asked her beforehand. They could have had this conversation earlier. Not in the parking lot. She refused to get out of the car.</p>
+                    <p>"Take me home." Lily demanded. Matt huffed and shook his head, slammed the steering wheel and took off. They drove home in silence.</p>
+                    <p>That was the last she saw of him.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>The birth came a month early. She woke up in the middle of the night to contractions so she instantly grabbed her bag and took the bus all the way to the hospital. Alone.</p>
+                    <p>The new check-in process at Tanner Center for Longevity was revolutionary. A nurse triage used to take four to eight minutes per patient. Now the system did it in under sixty seconds. The waiting room only had a handful of people waiting. Lily approached the kiosk and a quick scan identified that she was there to give birth. She verified the reason for the visit and her identity then waited a few moments for a nurse to arrive.</p>
+                    <p>She knew she was lucky to be admitted. When the rural hospitals closed the ones in the city became so flooded with patients they started denying entry based on genetic risk. Now people were turned away under certain conditions, left to survive on their own. Labeled too risky, an expensive liability that didn't make financial sense. Thankfully her own family's medical history was clean. That was the only reason she was admitted.</p>
+                    <p>As the nurses got her vitals all she smelled was chemicals. She felt nauseous as she stared at a blood stain on the sheets, trying to discern if it was caused by her or not. Not that it mattered. She was happy to have the bed. The nurses quickly rotated in and out. The hospital used to offer a dedicated nurse, or doula, even extended observation after delivery, lactation consultations, and subsidized formula. All gone in the name of efficiency and return on investment.</p>
+                    <p>The labor was quick and after the final push the nurses rushed to clean off the baby. When they were done, they gently laid the baby girl on her chest. "Sophia," Lily said softly to her newborn. "I'll call you Sophia." The baby looked so fragile. She couldn't imagine ever giving her up for adoption now.</p>
+                    <p>She was discharged a few hours after delivery. A nurse handed her a tablet and told her to provide her email address to send the paperwork to and walked off. Lily scrolled through it alone. Toward the end there was a section on postpartum depression. "See a therapist. Seek comfort through family and friends." She almost laughed.</p>
+                    <p>She took the bus home with Sophia bundled up in her arms.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>Hannah, an old friend and coworker came by that first week. Lily and Hannah had been close friends since they were sixteen. They met working at The Country Buffet. At eighteen Hannah quit after getting a job at The Rapture as a dancer. Lily quickly joined at Hannah's request once she realized how much better it paid. That all came to an end when she got pregnant, and she was thankful The Country Buffet was willing to take her back — until they weren't.</p>
+                    <p>Lily sat on the edge of the bed watching Sophia sleep while Hannah talked.</p>
+                    <p>"You know the Velvet that opened up next door. I heard it's decent pay. The women there have a kind of informal arrangement. It's not exactly a daycare, but they look out for each other's kids when someone's on call."</p>
+                    <p>Lily didn't say anything.</p>
+                    <p>"A friend of mine who used to dance with me at The Rapture said there's a position open. If you change your mind." Hannah pulled a folded piece of paper and handed it to Lily. "No pressure." Lily put it in her pants pocket.</p>
+                    <p>Then, after a pause and a deep breath: "Have you thought about adoption?"</p>
+                    <p>Lily shook her head without looking up. She'd never felt like she was part of a real family. Sophia was the first thing in a long time that was entirely hers. It would be hard, but everything in Lily's life was always hard. She knew Hannah meant well, so she looked up, smiled, and said, "I'll figure it out."</p>
+                    <p>"Have you told your sister?" Hannah asked, trying to change the subject.</p>
+                    <p>Lily looked down. "No. I want to. I just can't find her. I have like ten, maybe a dozen phone numbers saved for her. No answer from any of them. She's listed as released, so I know she's out there. Somewhere."</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>She had enough money for three more months of rent before things got critical. Or so she thought, until she came down with a fever and her milk dried up almost overnight.</p>
+                    <p>The number sat in her pocket for a week. She'd even washed her pants without taking it out, and somehow it survived. Her fingertips found it as she searched for a tissue. She looked at it curiously and placed it on top of her nightstand as she filled out Sophia's formula profile.</p>
+                    <p>Formula had become something else entirely. A genetically optimized recipe had come to market, subscription-based, tailored to the infant's genetic profile. Four times the cost, free with insurance. It pushed the cheaper brands out of business. There was nothing in the middle. Low income families survived on breast milk or used powdered milk. Some of the younger moms were even resorting to raw animal milk since it was cheaper and easier to find. This caused a spike in infant malnutrition, severe vitamin deficiencies, and an uptick in fatal infant mortality.</p>
+                    <p>Lily made the purchase on credit she didn't have. The first month went fine. The second month the order was marked delivered. There was even a photo: a box at her door. When she went to get it, nothing was there.</p>
+                    <p>The automated support bot told her that without evidence of theft or damage, nothing could be done. At the end it felt like the bot was giving her a lecture about package security in high-crime areas. There were delivery lockers, it noted. Lily knew. They were miles away and required she take a bus which would cost her even more money. Money she didn't have.</p>
+                    <p>She sat with the phone in her hand for a long time. Sophia was asleep. The apartment was quiet. She looked at the nightstand and picked up the paper.</p>
+                    <p>She looked at it for two days before she called.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>She arranged for Hannah to watch Sophia while she interviewed. The process was efficient. Eric provided a quick overview of the fee structure, her cut, the health check routine, the benefits, the informal childcare schedule among the workers. He leaned back in his chair while he talked.</p>
+                    <p>"There's real good money in it if you're good at it. If you're professional about it." He leaned forward and slid a tablet across the desk. "Most girls freeze up here." He watched her. "You don't seem too squeamish."</p>
+                    <p>The tablet had a worker profile builder. A spot to upload photographs. A list of checkboxes. She scrolled through and stopped.</p>
+                    <p>Listening. Holding. Caressing. Being attentive. Present.</p>
+                    <p>She paused there, then selected all of them.</p>
+                    <p>Eric watched her and then laughed and leaned back. "You'd be surprised at how many women think they're good at those kinds of things, only to have those clients never come back." He put his elbows on the table again. "If you don't know how to make someone feel seen, stick to the basics." He tapped his finger next to the tablet, beside the explicitly sexual options.</p>
+                    <p>"The women who are good at making another person feel seen," he continued, "they work at it. It's a skill. They take pride in it." He gestured vaguely. "They stay. They do well. The ones who don't" — he shrugged. "I'm not running a charity. You don't want to give blow jobs, you don't have to. But if you don't have customers after the first week, you're gone."</p>
+                    <p>"Those kinds of customers don't come in every day and when they get an employee who's not skilled in the way they paid for, they get mad. They complain. They don't come back. We can't have that." Eric said with a soft chuckle.</p>
+                    <p>Lily looked at him for a moment. Took a breath. Checked a few of the other boxes and asked, "What's next?"</p>
+                    <p>Eric smiled, took the tablet, and stood up. As she followed him down the hallway he glanced back at her. "You'll either sink or swim."</p>
+                    <p>He led her to a dressing room where he sat her in a chair to get her hair and makeup done. When they were done she picked lingerie from a large wardrobe. The photos took ten minutes. When it was done Eric pulled up the full menu on his tablet and scrolled to the bottom. "Here it is. You look great." He said as he handed her the tablet.</p>
+                    <p>"Your profile is always available on the site to members when they log on. They get the chance to book time with you during your specific hours. If it's a walk-in, things work a bit differently. They use the menu upfront which is filtered to who is on-call at that moment. That's usually how most employees build up clients. Regulars."</p>
+                    <p>She looked at herself for a moment. Then looked away.</p>
+                    <p>Eric took the tablet back. "I'll show you the room."</p>
+                    <p>It was small. Dim. A circular table in the corner with two chairs. A bed with a nightstand on either side. A playlist already running softly from a speaker she couldn't see.</p>
+                    <p>"Monday, Wednesday, Friday, eleven to two. Lunch shift. Good place to start. Some girls come in wanting Saturday night and they see too much too soon." He winced, and nodded before continuing.</p>
+                    <p>"Before each session you'll get the client's name, requested services, how long they've paid for, ratings from other workers, if there are any. When the time's up the lights go red. If they don't leave, someone comes in. There's a panic button behind the nightstand. It triggers an alert in the daycare room and whoever happens to be working comes in and settles things." He stood there. "So. You want to start Monday?"</p>
+                    <p>She nodded.</p>
+                    <p>"Great. We'll need you to get tested with the doc before you go. It's weekly testing. Remember that. Every Monday before you start you get tested. You fail the test, no work for the next two weeks until you're clean. We get a sub. You don't get paid."</p>
+                    <p>Eric led her to the unofficial daycare room, a small room with a couch, circular table, and television. Two kids sat inside, a toddler and a teenager. The teenager was tall and muscular and sat on the couch reading to the toddler. Eric introduced him as Troy.</p>
+                    <p>"Until a few months ago Troy was considered one of the kids in here." Eric said laughing.</p>
+                    <p>Troy looked up smiling and gave a small wave. "Technically, I'm the bodyguard." He continued, "My mom, aunt, and sister all work here." He said it plainly, without apology. "They don't need bodyguards. They need a nanny. Eric pays me either way."</p>
+                    <p>Lily looked at Troy, then at the toddler beside him. "I have a daughter," she said. "She's about three months."</p>
+                    <p>Troy nodded like this was the most normal thing in the world. "How old is she?"</p>
+                    <p>"Three months."</p>
+                    <p>"She'll be good here." He said it simply, without ceremony. "We look out for each other's kids. That's just how it works."</p>
+                    <p>Lily looked at the room. The couch, the television, the easy way the toddler leaned against Troy's arm. She thought about Sophia. She thought about the formula and the empty box and the automated bot and the delivery lockers miles away.</p>
+                    <p>"Okay," she said.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>The first clients were predictable. Men who wanted what they came for and left. She learned to go somewhere else in her head while her body handled it. She thought about Eric, about how the professionals get paid better, so that's how she acted. Professional.</p>
+                    <p>Then Daniel came in.</p>
+                    <p>His intake request read: Holding. Caressing. Attentiveness. Music: New Wave. Her first non-sexual client. His name clearly wasn't Daniel, the wealthy ones always gave fake names. He was well dressed, quiet. Something in his eyes was deeply lonely.</p>
+                    <p>He laid his jacket on the chair. Sat on the edge of the bed and looked at his feet. Most men came in entitled, grabbing. Daniel just sat and waited for her to decide what happened next.</p>
+                    <p>She approached slowly, knelt down, and took off his shoes. Then sat beside him with their thighs touching. She turned toward him and put her arms around his shoulders.</p>
+                    <p>He leaned into her and she felt his whole body let go of something. She held him. After a moment she shifted back onto the bed and he lay down with her, his head on her chest, and she stroked his back. They stayed like that until the lights turned red. He got up, put his jacket on, and left without speaking.</p>
+                    <p>He came back the next week. And the week after. He became a regular. Lily found herself looking forward to his visits in a way she didn't entirely understand. She told herself it was because he was easy, gentle, no demands. Being with Daniel was the only time she felt safe at work. It was predictable. She knew he wouldn't hurt her.</p>
+                    <p>Every visit was the same. He'd enter, put his coat on the chair and sit on the bed waiting for Lily. They never talked. Lily felt like she understood Daniel through his eye contact. Or the lack of it. Like the night Daniel wouldn't even look at Lily when she wore a sheer bra. He wasn't there for sex. He seemed almost ashamed to be looking at her.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>On a Friday, Daniel came in and seemed heavier than normal. His breathing was uneven. Lily decided to change their routine. She sat cross-legged on the bed and invited him to put his head in her lap instead. When she started stroking his hair he began to cry.</p>
+                    <p>She didn't say anything. She didn't think that was what he needed. She kept stroking his hair. Wiping his tears away. He cried for a while and then stopped and caught his breath, and got up, and put on his coat and his shoes. He walked to the door.</p>
+                    <p>He stood there with his hand on the knob and his back to her.</p>
+                    <p>"Never speak of this."</p>
+                    <p>He left without turning around.</p>
+                    <p>Lily sat in the dim room with the playlist still going. She didn't know what to think. They had never spoken. She didn't understand why this time was different. She only knew that something in him had shifted, and that she'd been there to witness it.</p>
+                    <p>She wasn't sure what any of it meant.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-2">
+                <div class="chapter-number">2</div>
+                <div class="chapter-title">Alice</div>
+                <div class="chapter-subtitle">2028</div>
+                <div class="chapter-body">
+                    <p>Alice was sixteen when she ran away from home for the first time. She couldn't handle the confinement, she felt trapped and had to escape her mother. Constantly told how to behave, and always being blamed for everything. For being the reason their father left, the reason for the medical bills, the reason there was no money. She quickly learned that when you're a minor you don't have any rights. You can't escape. Alice's mom called the police and they brought her back within hours.</p>
+                    <p>"I hope this teaches you a lesson," her mother said when Alice walked back through the door. The only lesson Alice learned was that when she turned seventeen, she could leave and no one could force her back. So that's what she decided to do. She just had to wait.</p>
+                    <p>In the meantime, she self-medicated. She was smart, and hated it. The college level math classes she was placed in only made her feel embarrassed and out of place.</p>
+                    <p>She found comfort in an art group at school. A group of misfits who felt doomed to go nowhere. She loved to draw but never felt good enough, even after winning competitions at the public library. It felt like pity. Only a handful of people entered anyway. The group validated everything she believed about herself. It was an echo chamber of self-doubt and it was the most comfortable she'd ever felt.</p>
+                    <p>It started with cigarettes, then weed, then psychedelics.</p>
+                    <p>Things escalated when Alice found Adderall. It felt like someone finally hit mute on everything. A calm, focused quiet she didn't know was possible. For the first time her brain felt like it was working the way she'd always assumed everyone else's just naturally did. Going back to the noise after that felt unbearable.</p>
+                    <p>Ryan was part of the group, he was a sculptor. He'd show up, say something quiet, and people would reorganize themselves around him without noticing they'd done it. Alice noticed immediately. She'd spent her whole life being the smartest person in the room and it got her nowhere. Ryan had none of her book smarts and he didn't need them. He got everything he needed from knowing how to make people feel like he'd chosen them. Ryan was neither the smartest nor the loudest, but everyone wanted to be around him.</p>
+                    <p>When they first met, Ryan made a joke about something being ironic when he clearly meant coincidental and was just referencing the Alanis Morissette song. Everyone laughed anyway. When she got him alone she softly corrected him. He looked at her with a devilish grin. They started seeing each other in secret.</p>
+                    <p>It was Ryan who suggested she run away. Truthfully, Alice didn't need much convincing. It felt like Ryan was giving her permission to do what she already knew she wanted to do. Though he made it clear she couldn't stay at his place, so Alice went to her best friend's house instead. That was the first place her mother told the police to look.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>He ignored her for a week after she was brought home. Alice was crushed. He was the only thing that made her feel special, aside from the Adderall. She reached out first, through a note passed through a friend. He showed up in the parking lot of Bates, the burger joint where Alice worked four nights a week and weekends. It was the kind of place that had been there forever, with the sign missing letters. Alice worked the counter and smelled like fryer oil by the end of every shift. She hated it.</p>
+                    <p>Standing in that parking lot, Ryan laid out a plan for their escape. Together. His grandfather owned a cabin four hours north. The old man never visited. They'd go there, get a night's head start before anyone noticed. It sounded simple. Ryan made everything sound simple. They just needed to wait until her birthday. It was only a few months away. Alice told herself she could make it until then.</p>
+                    <p>Ryan was unpredictable, hot tempered, volatile when things didn't go his way. The more she got to know him, the more Alice knew to tiptoe around him. They kept their distance, only seeing each other on weekends, always in the same spot. He'd pick her up after work and they'd sit in the woods for hours. Ryan would talk about the cabin like it was already theirs. He said things like they'd finally be able to breathe out there. Alice had never heard anyone talk to her about the future with her in it. She knew he was probably full of it. She didn't care. She needed an escape.</p>
+                    <p>He mentioned a gun once, casually, a few weeks before they left. His grandfather kept one at the cabin, he said. Just in case. Alice didn't ask what that meant and Ryan didn't explain. He rarely provided much detail.</p>
+                    <p>He'd kissed her on the forehead and told her: "There's no need to worry so much. Relax. Stop overthinking it."</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>When the day came Ryan arrived early and waited in the parking lot. Her shift ended, she walked out, and slid into the passenger seat.</p>
+                    <p>"Did you empty your account?" he asked before she'd even closed the door.</p>
+                    <p>She paused, already knowing how he'd take it. She shook her head.</p>
+                    <p>Ryan pounded the steering wheel. "What the fuck?! We talked about this. We need that money."</p>
+                    <p>"The bank wouldn't let me without my mom's approval. She's the co-owner of the account."</p>
+                    <p>Ryan rolled his eyes. "We need cash." He reached under the seat and came up with the gun. Not at the cabin. He'd had it already. Maybe it'd been sitting there in his car this whole time.</p>
+                    <p>Alice was scared. It didn't stop her. They made plans to leave and she was leaving no matter what. "This is going to get us some cash." Ryan said as he showed it to Alice then tucked it back under his seat as he drove off.</p>
+                    <p>They drove north for hours before Ryan pulled over at a highway rest stop. He reached under the seat again and held the gun out toward her.</p>
+                    <p>"Me?" Alice asked.</p>
+                    <p>"We need cash." He gestured at the parking lot. "Highway rest stop at midnight. These idiots are all waiting to be robbed." He said it like a fact, like something only smart people knew. "Tap on a window, they freak out, hand over whatever they have, you run back. You won't even use it."</p>
+                    <p>Alice looked out at the lot. She was high on Adderall and genuinely doubtful that anyone would be scared of her. But she'd already let Ryan down by failing to come up with the money. She thought if she did this one thing he'd calm down and they could get to the cabin before sunrise. She took the gun, exhaled, and got out of the car, leaving the door open so she could get back faster.</p>
+                    <p>Her hands were clammy. The gun felt slippery. She'd been to shooting ranges before. This was nothing like that.</p>
+                    <p>She found a car with a middle aged man asleep in the driver seat. She tapped the window lightly with the barrel. Nothing. Tapped again. Still nothing. She felt a wave of relief so strong it almost moved her. This was her out. She could walk back and tell Ryan he wouldn't wake up and that would be enough.</p>
+                    <p>She was already heading back when Ryan got out of the car.</p>
+                    <p>"What are you doing? You didn't do anything and you're walking away."</p>
+                    <p>"He won't wake up," she said, keeping her voice down.</p>
+                    <p>Ryan took the gun from her hand. "Get in the driver seat. Be ready. We drive north."</p>
+                    <p>Alice got in without arguing. She could tell by his face. When she pulled the door shut Ryan walked back to the car, positioned himself, and fired twice. The window shattered. He looked like he was being pulled in through the opening. Then he ran back and threw himself into the seat beside her.</p>
+                    <p>"Go!"</p>
+                    <p>She drove. Her hands were shaking but she didn't flinch. Ryan kept turning to look behind them. The car Ryan had shot into was following them. Alice was still processing that when Ryan shouted and she swerved hard and lost the road entirely. The car flipped.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>The next thing she knew emergency responders were pulling her out of the car. Ryan was unconscious. She was read her rights and taken to the hospital.</p>
+                    <p>She was questioned for hours, giving almost nothing away. They told her Ryan was alive. They questioned him and he said it was all her idea. She didn't know what to believe. She knew from the cop shows her mother streamed that the police lied to get people to talk. She also knew Ryan was weak. She told the truth anyway. The officers told her the victim had survived, and that she was lucky, because if he hadn't she'd be looking at something she wouldn't come back from.</p>
+                    <p>She was allowed one call. She used it on her mother.</p>
+                    <p>She got through the basics before her mother's voice went thin and controlled. "Do you have any idea what you've done? You're an embarrassment. I have to pay legal fees now, you know there's no public defenders anymore. It's all bullshit anyway because you are going to prison. There's too much evidence." A pause, then a huff: "I've been up all night. The police were here. The neighbors saw."</p>
+                    <p>Alice sat with the phone against her ear and looked at the floor. The handcuff pulled at her wrist when she moved. She felt horrible. She didn't mean to cause trouble. All she wanted was to escape.</p>
+                    <p>"You're just like your father." Her mother always saved that one for last.</p>
+                    <p>Alice didn't say anything. She handed the phone back without saying goodbye.</p>
+                    <p>When she was cleared she was transported to a facility two hours from home. Far enough that her mother wouldn't visit. It'd be far too expensive. Alice looked out the window the whole drive and didn't think about much. There wasn't anything left to plan for. For the first time in as long as she could remember, there was nowhere to escape to.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-3">
+                <div class="chapter-number">3</div>
+                <div class="chapter-title">Ryan</div>
+                <div class="chapter-subtitle">2028</div>
+                <div class="chapter-body">
+                    <p>Ryan's mom had been awake on meth for the past two days. His father came home around midnight. Ryan heard the door, followed by yelling, then screaming. Things falling over, breaking.</p>
+                    <p>He figured out quickly that if you looked calm people left you alone. The alternative was attention he didn't want. Case workers. Questions he didn't like answering. He didn't feel like foster families were a better alternative to his junkie parents. As messed up as they were, he knew what he was dealing with. He was used to it.</p>
+                    <p>So he performed. He got used to putting on the performance.</p>
+                    <p>He was thirteen when Mrs. Russo called him out in front of the class. He'd said something under his breath to the kid next to him and she'd stopped mid-sentence and pointed at him and asked him to share it with everyone. The class went quiet.</p>
+                    <p>Ryan looked at her for a moment. Then he said, flatly, "I was asking Derek if he understood the assignment. He looked confused." He glanced at Derek. Derek, who had in fact looked confused, nodded without thinking.</p>
+                    <p>Mrs. Russo stared at him. She knew. He could tell she knew. But there was nothing to grab onto. He held her gaze without blinking, pleasant, cooperative, completely unreadable.</p>
+                    <p>She turned back to the board.</p>
+                    <p>That was when he understood it wasn't just survival. It was power. A different kind than money or size or any of the things other kids had. His parents had nothing and gave him nothing, but they had accidentally given him the ability to read a room faster than anyone in it, and to give people back exactly what they needed to see.</p>
+                    <p>He spent years after that refining it. He was genuinely good at making people feel seen. The problem was that he could do it without feeling anything in particular himself, and he couldn't tell the difference between the times he meant it and the times he didn't. He wasn't sure the distinction mattered. It had never been required.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>He was attracted to Alice's bravery. At sixteen she ran away from home. Ryan wanted to leave as much as Alice did, but never worked up the courage to do it. His parents were junkies yet they still managed to put a roof over his head.</p>
+                    <p>He thought about Alice more than he'd care to admit. He told himself it was because she was unpolished, he needed her help.</p>
+                    <p>He had not meant for things to go as far as they did. The cabin was real. He'd meant to take her there and for it to be something. A place where they could lay low together and figure it out from there.</p>
+                    <p>The gun had been in the car for months. He'd picked it up from his grandpa's cabin. He told himself it was for the drive. For protection.</p>
+                    <p>The rest stop was an impulse. He wouldn't say that in court.</p>
+                    <p>He'd watched Alice from the car. She looked nervous with her shoulders hunched, tapping on the window too gently, already looking for a way back. Something moved through him watching her. The same feeling he'd had at nine years old, stepping over his father, understanding that if he didn't take care of things nothing would get taken care of.</p>
+                    <p>He got out.</p>
+                    <p>He took the gun and told himself he'd fix it.</p>
+                    <p>The noise was louder than he expected. The glass shattered and he reached in and the man pushed back and Ryan ran before he'd decided to run.</p>
+                    <p>When he came to, there was a ceiling tile with a water stain shaped vaguely like his grandfather's face and a police officer standing at the foot of the bed.</p>
+                    <p>He talked for three hours. He was good at it. He gave them a version of the story that was mostly true except for the part that mattered most. It didn't feel like a lie. It felt like every other performance he'd ever given. You read the room, you gave them what they needed to hear.</p>
+                    <p>The trial was not what he expected. He expected to be believed.</p>
+                    <p>The prosecution had the gun. They had his fingerprints. Gunpowder residue. They had the man in the car who was still alive and remembered Ryan with the gun.</p>
+                    <p>He stared at Alice when she took the stand. He'd given her everything. The cabin. They were going to have a future. Not anymore.</p>
+                    <p>Fifteen to twenty year sentence.</p>
+                    <p>In the transport vehicle he looked out the small window and thought about the cabin. Still empty probably. Key under the stone duck in the garden.</p>
+                    <p>He thought about Alice for a moment, then stopped.</p>
+                    <p>She wasn't loyal enough.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-4">
+                <div class="chapter-number">4</div>
+                <div class="chapter-title">Steve</div>
+                <div class="chapter-subtitle">2028</div>
+                <div class="chapter-body">
+                    <p>The town had been dying before Steve got there. The main street had a dollar store, a bar, a church, and a number of boarded up storefronts.</p>
+                    <p>Steve rented a small two-bedroom house on a large plot of land in the middle of nowhere. Enough room for his two kids to visit on the weekends. He'd moved here after Karen kicked him out. She kept the house in the city, kept the friends, kept the life that had mostly been hers to begin. He couldn't afford to stay close so he put distance between himself and everything familiar and told himself that was practical. The distance did make things easier.</p>
+                    <p>The biggest money maker in the city was the women's correctional facility which sat six miles out. It was the largest employer within forty miles. If you lived here there was a good chance you worked there. If you didn't work there you probably knew someone who did.</p>
+                    <p>He found work as a correctional officer a few months after settling in. It was the obvious choice, the only real choice. Good pay. Benefits. A pension if he lasted long enough.</p>
+                    <p>He enjoyed the job. Not the work itself. The work was tedious and sometimes ugly. He liked the keys, the uniform, the authority it gave him. He felt powerful. Karen spent eight years making him feel like a problem. Here he was in charge and it didn't matter what the inmates said, they had to listen or else.</p>
+                    <p>The drive in was quick. At the gate he slowed down, lifted two fingers off the wheel at the officer in the booth, and pulled through. Nobody scanned his car. He'd worked there long enough that it wasn't worth the hassle. He parked, badged in and started his rounds.</p>
+                    <p>The facility was low security. Nonviolent offenses mostly, drug charges, fraud. It was quiet, which was probably why Parker Tanner's company had chosen the facility to partner with.</p>
+                    <p>The contract had come in years before Steve started. The facility provided the labor, the company provided the line equipment and the raw materials, and the product that came out the other end was a genetically optimized infant formula that had taken a significant share of the market in under two years. Subscription-based, tailored to the infant's genetic profile.</p>
+                    <p>The mixing and packaging happened here and in four other facilities Steve knew of, possibly more. The prisoners made pennies on the hour. They also earned good behavior credits for hitting their daily quota, which meant the line ran fast and complaints were rare. The product shipped in unmarked trucks to a distribution center two states over. From there it went everywhere.</p>
+                    <p>Nobody talked about where it was made. There wasn't any reason to. The label said "Made in USA, FDA approved." The approval still meant something to most people, even after the agency had been restructured and half its enforcement division had been quietly folded into a private accreditation body that Parker Tanner's foundation had helped fund. The logo was the same. Things seemed the same.</p>
+                    <p>The informal economy ran alongside the formula line. Adderall, heroin, fentanyl, meth, crack, cigarettes all moved steadily. For some of the women it was recreational, a way to make the hours go by faster. For others it was functional, the only way they could face time in prison, to get through the noise and the repetition and the smell of the line without coming apart. Guards controlled access. Steve brought things in through his car. Most of the supply came in through the formula supply trucks.</p>
+                    <p>Garrett knew. Garrett had known for years and had never said anything directly, which was how Garrett handled most things. He was the one who originally told Steve about the deal.</p>
+                    <p>"Leave your car trunk unlocked overnight and get one trustworthy inmate of your choice to unload it and add it to the line. You'll be promoted and get a raise." Garrett told Steve in private over drinks.</p>
+                    <p>"Give me a few weeks to pick the right girl," Steve said.</p>
+                    <p>"All these women are going to try their shit. We have certain safeguards, you know what I mean? If anything comes up, just be honest," Garrett said with his eyebrows up high. "We'll sort things out. There's a chain of command." He nodded.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>Steve chose an inmate named Ashley because she looked a little like Karen from a certain angle. He loved the feeling that gave him, the sense of power dynamics reversed. Ashley understood the arrangement and worked well for the first couple of months.</p>
+                    <p>Things changed the day Ashley threw a bowl full of microwaved sugar water at another inmate, Heather, for flirting with Steve.</p>
+                    <p>He was on the far end of the floor when he heard it. A loud crash, a splash, then a scream. He was moving before he'd fully registered what it was. By the time he reached the common room Heather was on the floor with her hands over her face and Ashley was standing at the microwave, just standing there, like she was waiting for someone to tell her what happened next.</p>
+                    <p>Steve called Garrett without thinking.</p>
+                    <p>Garrett arrived, looked at the room, looked at Steve, and didn't say anything for a moment. Then he started talking about transfer protocols. The incident report, when Steve saw it later, said Ashley had been agitated, looking for a confrontation with anyone, that the bowl had gone wide and hit Heather incidentally. It said there was no specific target. Garrett had written most of it. Steve signed where Garrett told him to.</p>
+                    <p>Ashley was transferred within the week. Steve didn't ask. That was the arrangement.</p>
+                    <p>The next day when Steve walked the floor he noticed Alice. A new face. He'd seen her earlier when the fight broke out and she was standing in the same spot the whole time, arms crossed, watching.</p>
+                    <p>He approached her a few days later in the common room and asked how she was settling in. They talked for a few minutes. He was vague. She was direct. That caught him slightly off guard. She wanted to know how to get out early. He brushed it off. "Some get lucky, others don't. Good behavior mostly, doing your job, doing what you're told. That pays." He smiled and went off to do his rounds.</p>
+                    <p>He came back a few days later. He started by complimenting her on her quota. Then she did it again. "Does that help me get out early? The more quota I deliver?" Alice asked.</p>
+                    <p>Steve kept it vague. He didn't fully understand how things worked, but he wasn't ever going to let Alice know that. Sometimes he was able to help shave off a few years, others not so much. He wasn't a miracle worker. "Some women find ways to make it easier on themselves." He said, already looking past her.</p>
+                    <p>Alice's expression turned serious, like she understood. She nodded. He smiled once and walked off to finish his rounds.</p>
+                    <p>A few days later he stopped beside her in the common room. "Lot B. Blue sedan. End of your shift." He walked off without waiting for a response.</p>
+                    <p>When Alice got to the car the doors were unlocked. On the passenger seat was a piece of paper that said "In the trunk. Add to your quota." Alice took the hint and transported the boxes to her station.</p>
+                    <p>Steve came out at the end of his shift and drove home.</p>
+                    <p>The town looked prettier at night. The house was quiet, the kids weren't there. He sat at the kitchen table with a beer and his phone open in front of him.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-5">
+                <div class="chapter-number">5</div>
+                <div class="chapter-title">Alice</div>
+                <div class="chapter-subtitle">2031</div>
+                <div class="chapter-body">
+                    <p>The visiting room smelled like White Castle hamburgers and stale coffee. Alice had grown to enjoy the scent. It meant she had a visitor, which was a nice break from the daily routine. Visits were rare. Not because no one wanted to visit, because they were expensive. Everything in prison was expensive, the calls, the letters, the commissary, the visits that ate up an entire travel day for someone without a car. It added up.</p>
+                    <p>Lily took the bus. It cost her a full day's paycheck, bus fare, and an entry fee.</p>
+                    <p>The last time someone came it was both of them. Her mother sat across the table and talked the whole visit without asking Alice anything. She just talked about how embarrassed she was. About the neighbors, about some interaction she had at the grocery store, about nothing of any importance. Lily sat beside her and said almost nothing. She never did when their mother was in the room. There wasn't any space.</p>
+                    <p>This time Lily came alone. She looked more mature.</p>
+                    <p>"You look thin," Lily said.</p>
+                    <p>"That's because the food here is disgusting. You got anything for the vending machine?" Alice asked. Lily handed her some change and Alice walked over and came back with two bags of chips and a vending machine hamburger and put one of the chip bags in front of Lily without asking. She unwrapped the hamburger and took a large bite and chewed slowly. Lily opened her chips and ate a few and turned the bag toward Alice to finish.</p>
+                    <p>Across the room a guard moved between a man and woman who had leaned in to hug each other. Hugging was only permitted when you first enter and leave, not to be done throughout the visit. They pulled apart. He kept moving, scanning the room while the other guard sat next to the door observing the room.</p>
+                    <p>Alice didn't look over. She already knew Steve was on the far wall. "I have a little secret," Alice said, keeping her voice low while smiling.</p>
+                    <p>Lily leaned in.</p>
+                    <p>"That guard sitting over there." Alice didn't point, just tilted her head in his direction. "His name's Steve. We have an arrangement. He looks out for me. Gets me things I need. He's been talking about the possibility of an early release, good behavior, he knows the right people."</p>
+                    <p>Lily's mouth opened slightly.</p>
+                    <p>"Let me finish," Alice said.</p>
+                    <p>Lily couldn't contain herself, blurting out flatly: "He's clearly a creep. You think you're the only one?" She paused for a moment, then sternly said, "He's a guard."</p>
+                    <p>"He's a guy. They're all creeps. I know what I'm doing." Alice kept her eyes on her. "He's not cruel. You don't understand what most of them are like. He's nice. He's helping me."</p>
+                    <p>Lily looked down, took a breath. "Okay." Not agreement. Just the decision to keep listening.</p>
+                    <p>"Don't tell mom," Alice said. "Where is she anyway?"</p>
+                    <p>Lily didn't answer right away. She looked at Alice. "That's why I came," Lily said, taking a deep exhale.</p>
+                    <p>Alice waited.</p>
+                    <p>"I came home. Her door was locked. I thought she was, you know how she gets. I knocked. I waited. I slid a note under the door." She paused. "I called the landlord and he opened the door."</p>
+                    <p>"She'd shot herself," Lily said. "She's gone."</p>
+                    <p>Alice looked at her for a moment. Then at the vending machine. Then back at Lily.</p>
+                    <p>"Wow," she said calmly.</p>
+                    <p>Lily waited for more. There wasn't more.</p>
+                    <p>"You okay?"</p>
+                    <p>"I don't know. What do you want me to say?" Alice picked at the edge of her wrapper. "Where'd she get the gun?"</p>
+                    <p>"She stole it. It was the neighbors." Lily said, staring at the food.</p>
+                    <p>"Were you there when they —"</p>
+                    <p>"Yeah." Lily nodded.</p>
+                    <p>Alice thought about her mother's face the last time she'd seen it in the visiting room. She thought about being sixteen, coming home, never knowing which version of her was waiting on the other side of the door.</p>
+                    <p>"She was exhausting," Alice said, shaking her head.</p>
+                    <p>Lily nodded in agreement. Then, quietly: "She was alone. She raised us with nothing. No help, no money, no one checking on her. She never had anything, no parents, no husband. She had to take care of herself and us and it feels like that killed her."</p>
+                    <p>Alice didn't say anything.</p>
+                    <p>"I feel bad for her," Lily said. "I just —" she stopped.</p>
+                    <p>"I'm relieved," Alice said.</p>
+                    <p>Lily looked at her, nodded again and looked at her feet.</p>
+                    <p>Neither of them said anything for a moment.</p>
+                    <p>"She's not suffering anymore," Alice said. "That's something."</p>
+                    <p>Lily nodded again in agreement.</p>
+                    <p>A beat of quiet settled between them.</p>
+                    <p>"Was there a note?" Alice asked.</p>
+                    <p>Lily hesitated. "Not exactly. There was a notepad on her bedside table. She'd drawn something. I don't know. A shape. Lines." She shook her head. "I couldn't tell what she was trying to say. I've been thinking about it since and I still don't know."</p>
+                    <p>Alice looked at her.</p>
+                    <p>"I don't think I'll ever know," Lily said.</p>
+                    <p>Alice didn't say anything.</p>
+                    <p>Lily took a deep breath. "She was sad and angry for a long time," she said finally. "I think she was sad before we were born and she was angry at the world. Angry at us. She couldn't handle it. She was never really there, even when she was there." She said it without cruelty.</p>
+                    <p>"I keep thinking I should have done something, I should have known." Lily said.</p>
+                    <p>"How could you? She never let anyone in, just talked at people." Alice said.</p>
+                    <p>"I lived there," Lily said. "I was right there."</p>
+                    <p>Alice looked at her. "She didn't want to be known. That's not on you. When she talked, it wasn't about how she felt. It was about everyone around her ruining her life. She didn't take responsibility for anything."</p>
+                    <p>The guard across the room said something to another couple. The room was loud enough that Alice couldn't hear what he said. Steve hadn't moved from the wall.</p>
+                    <p>"Are you okay?" Alice asked.</p>
+                    <p>Lily shrugged. Which meant she'd been managing alone and would keep managing alone because that was all she knew. They were alike in that.</p>
+                    <p>"I'm going to get out," Alice said. "Steve knows people. He said he could shave a few years, maybe more. If I keep my head down and he comes through." She said it not quite believing it but needing it to be true.</p>
+                    <p>Lily looked up. Her eyes moved briefly past Alice's shoulder, toward the wall, and then back. Smiled. Then said, "Okay, good."</p>
+                    <p>The guard called out: "Five minutes, wrap it up. Five more minutes."</p>
+                    <p>They looked at each other across the table. Alice thought about how much had happened since the last time they'd been in a room together. They used to know each other much better and now they felt like two people with completely different lives and there was no way to bridge it.</p>
+                    <p>"I'll come back," Lily said.</p>
+                    <p>Alice tilted her head to the side. "Save your money. I'll be okay. Call when you can."</p>
+                    <p>They stood. The guard started moving through the room, separating pairs, but he stopped a few feet short of them and turned to deal with something else. They held each other for a moment longer than they should have been allowed to.</p>
+                    <p>Lily said it again against her shoulder. "I'll come back."</p>
+                    <p>Alice didn't answer. She stepped back and let herself be escorted out.</p>
+                    <p>When she got back to her cell she lay on her bunk and looked at the ceiling. She thought about the cabin. She wondered if Ryan ever thought about it. She doubted it.</p>
+                    <p>She thought about Steve's promise. Early release. A few years, maybe less.</p>
+                    <p>She let herself believe it.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-6">
+                <div class="chapter-number">6</div>
+                <div class="chapter-title">Parker</div>
+                <div class="chapter-subtitle">2033</div>
+                <div class="chapter-body">
+                    <p>Parker Tanner came from a stern military family. His mother was a doctor, and his father a mechanical engineer, both employed by the US army. They moved almost yearly. First Fort Bragg, then Pendleton, then a stretch outside of Stuttgart. Then Bragg again, which was worse the second time because the kids already didn't like him and weren't thrilled to see him back. Military kids were different, they understood that new people were temporary. Parker felt there was no reason to feign friendship. A waste of time.</p>
+                    <p>Parker never wanted to be part of their groups anyway. They were all fools, blindly following whatever the pack said. Packs felt safe. They mocked the unfamiliar because it felt threatening, they repeated whatever the loudest person said because it felt like agreement which felt like belonging. It was people doing what people did when they were desperate to belong.</p>
+                    <p>By the time Parker was twelve he decided the world was made up of two kinds of people: the ones who thought for themselves and the ones who followed the pack. He wasn't a follower. At thirteen his mother got him a stocky gray bulldog named Scout. For someone who never stayed in one place too long, Scout was his home. The one thing that never judged him. The one thing that loved him unconditionally.</p>
+                    <p>Any time Parker moved, Scout came along. The dog faithfully followed Parker through every major milestone in his life. Graduation, his first job, first relationship, first business, first break up, first million. Scout was there by his side no matter what. Scout even had a knack for warning Parker about bad people. It was as if the dog had a sixth sense. Scout hated Parker's dad and wouldn't even be in the same room as Parker's grandpa. He'd run the other direction. The dog seemed to intuitively know when to keep its distance from certain people.</p>
+                    <p>When things got dark, Scout was there to rest his head on Parker's knees comforting him. It was the deepest, strongest relationship Parker had ever had. He trusted the dog more than anything in the world. He couldn't imagine a life without Scout so after his first million he decided to focus on researching longevity treatments. He developed a close relationship with a controversial lab in Geneva known as leaders in the reverse aging market.</p>
+                    <p>The lab was not only a leader in longevity, it was also breaking grounds on cloning. One of the first to commercially clone pets. Parker had Scout cloned before he died, he expected Scout to act as a kind of father to his young self, teaching him, comforting him but that's not how things unfolded. Scout let out an angry bark when he saw his young clone. When it approached, Scout attacked, biting the young pup in the neck.</p>
+                    <p>Parker assumed it was jealousy. He kept them separated and began spending time alone with Scout's young clone. He noticed the difference quickly. Did they look the same? Yes. Did they act the same? Not exactly. Some traits were there. They had the same eating habits, the same bark, but he didn't follow Parker around. He didn't rest his head on Parker's knees. Parker knew the issue. Memory. No clone was ever going to produce the right results because no clone would ever be right beside Parker when he was young. The way Parker saw it, the only way it would work was if he could artificially recreate Scout's memories and give them to his clone.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>Scout died when Parker was thirty-four. He went to bed healthy, laying right beside Parker and when morning came, Scout didn't wake. The death had been a long time coming, Scout was twenty-two when he passed away. A lifespan like that was unheard of for his breed. Bulldogs live around eight to ten years, but with Parker funding every medical treatment and technological advancement Scout lived far longer than anyone could have predicted.</p>
+                    <p>According to Parker and his team of researchers, their patented longevity treatments could extend any animal's life by another five to fifteen years depending on when they began taking the drugs. The longer you participated in the treatments, the longer you lived. The drugs were initially expensive, but could easily be scaled up and made cheaper if the market had any interest in it. Parker knew there would be interest and knew he could pass on that savings to the consumer while making huge profits. So that's what he did, the business was yet another massive success yet it couldn't stop Scout's death.</p>
+                    <p>Parker sat with the body for a long time, stroking his head, pressing his forehead to Scout's breathing deeply. He breathed in Scout's scent and began to cry. He stopped himself. Stood up. Took a deep breath and called to have someone taxidermy the dog as soon as possible so it could be placed in his office. By the end of that year he'd funded the research needed to break ground on synthetic memory generation for clones.</p>
+                    <p>He had more money than he knew how to spend. Most people in his position donated to whatever gave them a nice tax write off and stamp of approval from their liberal comrades. Parker wasn't most people. He spent the next fifteen years focused on memories. The first few iterations were off. When one trait was successful, others wildly diverged. The fifth iteration of Scout would rest his head on his knees, and developed a biting habit that didn't exist before. He couldn't explain it. Yet he was getting closer, so he kept going.</p>
+                    <p>Why stop with Scout? Parker's mentality began to shift. He would start by extending his own life. He was already participating in longevity treatments. Now he needed to get his own memories created so that he could live forever. He may not be able to identify all of the memories that shaped Scout, he wasn't there for all of them. But, he knew the memories of his own life that shaped himself and if he could make himself live forever then that gave him endless amounts of time to solve any problem in the world.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>In 2033, he sat in the third row of his first ever longevity conference, the room packed, all intently listening to Dr. Mehdi present his findings. Parker wasn't surprised. People had finally come around to his ideas, they always did.</p>
+                    <p>Dr. Mehdi clicked through his presentation slowly. The research had started as a long shot, Parker's lab had picked it up when no one else would touch it. Ten years later, the results were finally here. The very same work that was proven to extend canine life was now proving that it could extend human life in the same way.</p>
+                    <p>The preliminary results showed measurable deceleration in cellular aging markers in sixty-three percent of subjects. Mehdi said this while keeping an eye on Parker in the crowd. Parker was only half listening, he'd already reviewed the report. He was thinking about death. Death was the single largest source of waste in human civilization. Specifically, his death. All that accumulated knowledge, refined judgment, compounding experience, all of it wiped at a biological expiration date. Civilizations kept rebuilding from scratch. The same mistakes, the same institutions rising and collapsing, the same lessons learned and then lost. It was extraordinarily inefficient. If the right people didn't die, if he didn't die, then the losses would stop compounding. The knowledge would compound instead.</p>
+                    <p>He thought carefully about whether this counted as self-interest. He concluded it didn't. The research would help everyone. He just happened to be funding it and would have access to it first. The order in which people benefited was a logistical issue.</p>
+                    <p>He applauded when Mehdi finished, got up and escaped to the room they gave him between sessions. Small, no window. He didn't need a view. He sat down with his AI assistant to review what needed his attention.</p>
+                    <p>"Corrections portfolio first," he said, loosening the button on his jacket.</p>
+                    <p>"One of the facilities flagged an inmate. There's some concern about risking disclosure. Legal reviewed it and recommended relocating inmate 24601 to an alternate facility. The warden provided his upcoming press release draft for you to approve."</p>
+                    <p>Parker looked at the screen. He designed an efficient system where he could remain as hands-off. He wanted nothing to do with the prisons themselves. He made the business relationship clear to the warden. Parker's business only dealt with the manufacturing side of things, the training, the equipment. Parker didn't want his name in the press when something went wrong with the inmates. The prisoners were for the warden to deal with. He approved without much thought.</p>
+                    <p>"Next," he said.</p>
+                    <p>"Q3 actuals." The display populated with charts and graphs. "The formula division hit projections across all facilities. One outperformed by eleven percent. Distribution is ahead of schedule."</p>
+                    <p>Parker sat back.</p>
+                    <p>He had funded the genetic research behind the formula almost a decade ago, when personalized nutrition was still considered a niche application and the major formula companies were still operating on mid-century science. He'd seen what was coming before the market did. He'd believed in the research not because it was profitable but because the science was there. Infant nutrition in the first year had measurable downstream effects on cognitive development, immune function, long-term metabolic health. The old formula was an industrial approximation. The new one was precise. It helped. He had funded it because he knew it would help, and it quickly became yet another profitable business.</p>
+                    <p>"Good," he said.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>When the conference was over he went to his room and sat in the chair by the window with the blinds closed, thinking about what he'd built and how far he'd come.</p>
+                    <p>He hadn't chased what other people wanted. He never did. He always worked outside the box. From his perspective, he had single-handedly fixed the healthcare system and enhanced infant development. The prisons were more efficient than the state-run facilities they replaced. The formula was better than what it displaced. His hospitals were the most effective in the world. All the research he funded was decades ahead of its competition.</p>
+                    <p>He understood that some people looked at him and saw a heartless billionaire. The people drawing that conclusion were the same kinds of people who threw rocks at him when he was at Pendleton. Mindless, following the herd.</p>
+                    <p>He thought about Mehdi's slides. Things were going well. He'd known it would. Time just needed to pass to validate what he already knew. He always knew.</p>
+                    <p>He felt optimistic. The research was progressing. The quarter was strong. There was so much still possible. So much more to do. Memory. That was the missing piece. It wasn't ready yet. But it would be.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-7">
+                <div class="chapter-number">7</div>
+                <div class="chapter-title">Alice</div>
+                <div class="chapter-subtitle">2036</div>
+                <div class="chapter-body">
+                    <p>The guard handed her a bin with the belongings she came in with and a tablet to sign. She quickly signed without reading. At the bottom of the bin was a debit card. Everything she'd earned on the formula line minus commissary expenses. Forty-seven dollars.</p>
+                    <p>She thought about calling Lily and stopped herself. She felt like Lily was managing on her own and had been for a while. Alice didn't want to be another thing for Lily to manage. She picked up her bag and walked to the bus stop without knowing exactly where she'd go.</p>
+                    <p>She knew the release had come through Steve. Two years off. She'd expected more, a place to stay, some kind of landing. Instead she had no way to contact him and knew it would be a bad idea anyway. He wasn't supposed to be seen with former inmates, let alone one just released on parole. She understood.</p>
+                    <p>She'd spent years fantasizing about freedom. A private shower. A room alone. To move through a room without needing to ask for permission, to eat whenever she wanted.</p>
+                    <p>What she hadn't accounted for was how loud her own head would get when there was nothing to fill the hours. The formula line was non-stop and it also gave her something to keep her mind busy. Every hour accounted for. Out here there was nothing. She felt incredibly alone. More alone than when she was in prison.</p>
+                    <p>When the bus arrived it was empty. She sat up front and rode it to the nearest church shelter, over an hour away. The woman at the desk was apologetic, they were at capacity. Had been for weeks. She could put Alice on the list, but nothing would be guaranteed. Alice looked at the list. There were thirty-one names above hers.</p>
+                    <p>She asked if there was anywhere else. The woman gave her a printed sheet with seven other addresses. By the end of the day Alice had been to four of them, all at capacity. She sat on the steps outside the last one and looked at the sheet. She folded it and put it in her pocket.</p>
+                    <p>She spent the rest of the day applying for anything with an opening. Retail, warehouses, food service, distribution centers. Pointless, she thought. One background check would end the conversation before it started.</p>
+                    <p>Once it got dark it didn't feel like a choice. She didn't have enough money for a hotel and if she was going to sleep outside she had to at least be high. All she had to do was ask anyone outside the shelters, so she did, and in an hour she'd spent the last of her money on fentanyl. Not her first choice. But it was that or the full unmedicated weight of the situation, and she wasn't ready for that.</p>
+                    <p>She ended up passing out behind a convenience store. She didn't mean to fall asleep there. She didn't even remember walking there.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>She came to at the sound of a radio. An officer stood over her, looking genuinely concerned until she stood up and a needle fell out of her pocket. The concern left his face. He searched her, found what was left, and cuffed her without saying much. She felt a flash of something close to relief when she heard the car door close behind her as she sat on the cold plastic seat. A roof. Meals, as bad as they were. A system she already knew how to survive in. The outside wasn't off to a great start. At least she understood prison.</p>
+                    <p>At the station he took her to a small room and sat across from her. He said she was looking at twelve to sixty months. Alice didn't look up. She felt like a failure and started to cry.</p>
+                    <p>He watched her for a moment. Then he leaned forward.</p>
+                    <p>"Look. You can help yourself here. Give us names and we can talk about reducing this. We're not after you. We're after the people supplying you."</p>
+                    <p>Alice looked up. She'd heard a version of this before. Steve had said something like it once, standing in a common room.</p>
+                    <p>"I get time off and I'm still on the streets," she said. "No money, no job. Nobody hires an ex-con. I'm not giving you names to end up right back where I started."</p>
+                    <p>He tilted his head. "The bigger the name you give me, the bigger the reward. You get me street dealers, I can reduce, give you some cash. You get me a big name, I can clear sentences and pay." He leaned in again. "The bigger the name the bigger the reward. People that help expose big operations that lead to real charges get a lot in return. We don't just write off the charge. We put money in your pocket. Keep you on payroll."</p>
+                    <p>She looked at him. Something in the way he said it, the specific angle of what he was after, made her feel like he already had something in mind.</p>
+                    <p>"What happens when the money runs out?" she asked.</p>
+                    <p>"You keep giving me names, I keep you on. It depends on what you bring."</p>
+                    <p>She sat with it. She thought about the shelter list. Steve's face. Two years. Eight years of loyalty for two years off.</p>
+                    <p>"I know some things," she said.</p>
+                    <p>She gave up her dealer first. The officer wrote it down and told her she'd done the right thing. He paid her and told her to call if she had anything else. Charges reduced, all she needed to do now was community service. She walked out the morning after.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>She found a room in a boarding house she could stay at whenever she had thirty dollars, which was rare. She mostly slept under a highway underpass that was sheltered by cardboard. She ate mostly from convenience stores, kept her head down. She stayed mostly sober. Mostly. Enough to tolerate the night.</p>
+                    <p>She called the officer two weeks later with another name, someone she'd met outside the shelter who moved product through three different neighborhoods. He paid her sixty. She called again in the spring. And again two months after that. Each time the payment was a little less. He stopped asking about street dealers. He started asking about sources. How things moved.</p>
+                    <p>She knew it was coming. He knew her record. He'd been asking about supply chains. She needed to give him something worth more than street names.</p>
+                    <p>He called her one afternoon instead of waiting for her to reach out. That was new.</p>
+                    <p>"You spent time inside," he said. "I want to know about that. Meet me tomorrow, noon at the diner off main. I'll get you lunch."</p>
+                    <p>She'd been having this very conversation in her head for months, running different versions, deciding what she would and wouldn't give. She'd already decided she wouldn't give Steve. Whatever he'd done, he'd also gotten her out. Two years felt like an insult and the only kind thing anyone had ever actually done for her. She wasn't ready to give him up.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>They met the next day. The diner was busy when Alice arrived. He'd already gotten her a plate and had a notepad out next to him. He gestured towards the seat across from him. "Eat up," he said as he picked up his pen.</p>
+                    <p>"You ready to talk, real talk?" he asked.</p>
+                    <p>"I worked on the formula line," she said. "A lot of trucks going in and out of the facility. Every Monday one of the guards would have me take a few boxes from his trunk and load them onto the delivery truck."</p>
+                    <p>"What was in the boxes?"</p>
+                    <p>"I only looked twice." She kept her voice flat. "First time there were vials. Small ones, cylinder shaped, some kind of thick creamy substance inside. Labels with men's names on them. At least a dozen per box."</p>
+                    <p>He looked up from his notepad with his eyebrows raised. "Vials?"</p>
+                    <p>"Yeah. I don't know what was in the vials."</p>
+                    <p>"And the second time?"</p>
+                    <p>"Guns. Cell phones. SIM cards. USB sticks."</p>
+                    <p>He set his pen down.</p>
+                    <p>"Two boxes," she continued. "It was always two. Same spot in the trunk, same day of the week."</p>
+                    <p>"Who gave you the boxes? Whose car?"</p>
+                    <p>Alice paused. She looked at her coffee.</p>
+                    <p>"His name was Garrett," she said. "He's a guard there."</p>
+                    <p>He squinted, then asked, "What was your relationship with him?"</p>
+                    <p>"He was a guard. That was it."</p>
+                    <p>He studied her. "That's it."</p>
+                    <p>"That's it." She held his eyes. It was true enough. Garrett had never spoken to her directly about anything, had never made her any promises. Giving him up didn't feel like betrayal. It felt like a transaction.</p>
+                    <p>The officer closed his notepad, thanked her and said he'd be in touch. "This was good. Could be real good. Stay safe," he said and he placed some money on the table and left.</p>
+                    <p>She sat for a while after he was gone. She thought about the vials. The male names on the labels. She'd thought about them on and off for years, lying on her bunk at night running through possibilities. She didn't know what they were. She had a feeling it was the kind of thing you were better off not knowing.</p>
+                    <p>She picked up the money and left.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>The second arrest happened a week later. Outside the same convenience store. The officer who picked her up wasn't the one she knew. He didn't ask questions. He just processed her and walked her to the holding cell and left. Alice expected some negotiating, for the officer to ask for information in exchange for something. She got nothing but a cell and a phone call. When they asked her if she wanted to make a call, she ignored them. Exhausted, she turned around and laid on the bench staring at the ceiling half strung out. She closed her eyes.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-8">
+                <div class="chapter-number">8</div>
+                <div class="chapter-title">Steve</div>
+                <div class="chapter-subtitle">2037</div>
+                <div class="chapter-body">
+                    <p>Steve arrived at work exactly on time. He always did. The gate officer waved him through without looking up, same as every morning. He parked in the same spot, badged in, started his rounds.</p>
+                    <p>Garrett wasn't on the floor.</p>
+                    <p>Steve finished the first sweep before he let himself think about it. Garrett was always on the floor before Steve. In all the time Steve worked at the women's prison, he never started a shift without seeing him somewhere in the first twenty minutes. Steve didn't let himself focus on it. He explained it away when Henderson, the deputy warden, caught him in the hall.</p>
+                    <p>"You see the memo?" Henderson asked.</p>
+                    <p>"Which one?"</p>
+                    <p>"The one coming out at nine." He was already moving, he never stopped in full. "Personnel stuff. Routine."</p>
+                    <p>"Anything serious?"</p>
+                    <p>Henderson looked at him for just a beat too long. "Opportunity," he said. "For a lot of people." He kept walking. "See you at nine."</p>
+                    <p>Steve watched him go. Then he went back to his rounds.</p>
+                    <p>At nine, Henderson stood at the front of the break room reading off a tablet like he was going through a checklist. Facilities review. Personnel redistribution. Several guards transitioning to other locations over the next few weeks. Garrett's name was on the list.</p>
+                    <p>The warden was visible through the glass partition of his office at the far end of the hall, door closed, not looking up. He'd been there when they filed in and he was still there when they filed out. His presence always made Steve uncomfortable. He was only visible when things got serious, like when an inmate got seriously injured in custody a few months back — he was seen on the floor for at least a week, all hours of the day.</p>
+                    <p>Nobody asked questions then, and no one asked questions again this time. Steve didn't ask. He wanted to, but he knew he'd never get an honest answer anyway. He went back to his rounds.</p>
+                    <p>At break he walked out to the lot. He unlocked the car, looked around once out of habit, and opened the trunk.</p>
+                    <p>Empty.</p>
+                    <p>He stood there for a moment. Then he closed it and went back inside.</p>
+                    <p>He found Colleen in the common room after lunch. She was new, three weeks in, already running her numbers clean. She had the same quality he'd noticed in Alice when she first arrived. Arms crossed, watching, letting the place show itself before she decided anything.</p>
+                    <p>He kept his voice casual since he wasn't sure if she'd gotten to the car yet. He stood next to her and said, "Don't."</p>
+                    <p>She looked at him blankly with her eyebrows up.</p>
+                    <p>He nodded and quickly walked away.</p>
+                    <p>He caught Garrett in the parking lot at the end of the shift, loading a box into his own trunk. Personal items. "Didn't know you were leaving," Steve said.</p>
+                    <p>Garrett looked at him. "Good opportunity. Different facility, better position." He said it the way Henderson had said it.</p>
+                    <p>"When did it come through?"</p>
+                    <p>"Few weeks ago." Garrett closed the trunk. "These things move fast when they decide to move."</p>
+                    <p>Steve nodded. "Where are you going?"</p>
+                    <p>Garrett named a facility three states over.</p>
+                    <p>"You'll be fine," Garrett said, smiling. He said it looking at his keys, not at Steve. "Review's coming up. Word is it went well." He looked directly at Steve. "You should feel good about your position."</p>
+                    <p>Steve held his gaze. "Good to know."</p>
+                    <p>Garrett nodded once and got in his car.</p>
+                    <p>Steve stood in the lot and watched him pull out. He stood there after the car was gone, looking at the space where it had been. The sky was still flat and gray. He thought about the trunk. About Colleen's face when he asked. About the transfer list.</p>
+                    <p>He went back inside. He needed to take headcount. He usually started with the cells, but he was closer to the common room so he started there and quickly noticed a larger group of women whispering. He assumed it was gossip about the personnel change.</p>
+                    <p>When he got closer to take count, he heard one of them say: "Overdose? Bullshit. There's no way Alice almost dying has nothing to do with this."</p>
+                    <p>They all stopped talking as soon as they noticed Steve. He knew what he heard, and he knew none of those women could be trusted. He kept walking to finish his count.</p>
+                    <p>It took everything in Steve to not look anything up on the facility's computers. He was scared if he did it might look suspicious. He waited for his shift to be over, got in his car and drove home.</p>
+                    <p>The house was quiet. The kids weren't there. He got on his laptop and looked up Alice. He exhaled when he saw the record — admitted, treated, released. Not dead. He sat with that for a moment. Then he closed the laptop and went to the freezer to find something for dinner.</p>
+                    <p>He sat on the couch in the dark waiting for his food to heat up. He stared at the television, not paying attention to it. The microwave hummed and beeped when it was ready. Steve got up, finished the motions until it was time for bed.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-9">
+                <div class="chapter-number">9</div>
+                <div class="chapter-title">Daniel</div>
+                <div class="chapter-subtitle">2037</div>
+                <div class="chapter-body">
+                    <p>The drive in was his most peaceful time of the day. He was warden of a low-security women's correctional facility, four hundred inmates, sixty-three employees. The title meant something to him. It made him feel prestigious, important. He said it at dinner parties, which he and his wife Susan still attended on occasion, separately arriving at the same performance of a functional marriage. They had one daughter. He worked the hours he worked so she would never have to make the kinds of choices he processed paperwork on every day.</p>
+                    <p>Henderson called before he'd made it to his office.</p>
+                    <p>An inmate had collapsed on the formula line the previous afternoon. Head injury from the fall. Routine enough, except the medical exam that followed turned up something that wasn't routine at all. The woman was twenty-nine years old with no prior health history. The doctors were calling it premature menopause. The family was calling it something else.</p>
+                    <p>Martin listened to Henderson and looked out the window at the parking lot.</p>
+                    <p>The family had money, or enough of it that meant they could cause a stir. The father had already retained counsel. The daughter had gone into the facility fertile and was coming out sterile and demanded answers. The answer they were getting — perimenopause, spontaneous, documented in the file — was not satisfying them. They were threatening a press inquiry.</p>
+                    <p>He met them in the conference room off the main entrance. The mother sat with her hands folded on the table. The father stood at the window with his back to the room until Martin came in, then turned.</p>
+                    <p>He was a large man, the kind who had probably been athletic once and was still built like it. He didn't raise his voice. That was what Martin hadn't expected. He'd been prepared for anger, for threats, for the kind of scene that required security. Instead the man just looked at him.</p>
+                    <p>"She was twenty-nine," he said.</p>
+                    <p>Martin nodded.</p>
+                    <p>"She went in there healthy. They did a full physical when she was processed, I have the paperwork." He set a folder on the table. "And now, after some mysterious undocumented accident, she can't have children."</p>
+                    <p>"I understand your concern —"</p>
+                    <p>"I'm not concerned." The word landed flat. "I want to know what happened to my daughter."</p>
+                    <p>Martin said what he'd been told to say. "There is no record of an incident. The inmate's account doesn't match what we have on file. We have video of every shift, nothing happened. I cannot explain your daughter's medical situation. With the evidence we have, the story doesn't make sense. With all due respect Mr. Moore, criminals aren't known for their honesty."</p>
+                    <p>When Martin finished the father picked up the folder and held it for a moment and looked right into the warden's eyes. "She wanted kids," he said. "That was the thing she talked about. After she got out. Starting over." He set the folder back down. "She's not going to get that now."</p>
+                    <p>Martin didn't say anything.</p>
+                    <p>The father looked at him for a long moment. Then he walked out. The mother followed without speaking.</p>
+                    <p>Martin stayed seated after they left. He looked at the folder on the table. He didn't open it.</p>
+                    <p>Corporate leadership had been clear — since the Parker Tanner partnership came through, certain things were managed internally. Certain reports said what they needed to say. The family would be handled through legal channels that would keep things quiet. All Martin needed to do was deflect.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>He went home that night feeling the weight of it. The father's voice stayed with him. Martin recognized that sadness. Understood it. He would have done the same. Probably more.</p>
+                    <p>Susan was getting ready for bed when he found her. He reached for her in the dark, needing something to hold onto. She moved away without looking at him.</p>
+                    <p>"You're late again," she said.</p>
+                    <p>He nodded and looked up, feeling exhausted and desperately wanting to avoid a fight.</p>
+                    <p>"We had dinner without you. Again."</p>
+                    <p>He didn't say anything.</p>
+                    <p>"I don't know why I bother keeping things warm."</p>
+                    <p>"Susan —"</p>
+                    <p>"I'm tired, Martin." She turned off the lamp. "I'm going to bed."</p>
+                    <p>He stood in the dark for a moment. Then he walked out, down the stairs, and sat on the couch. He lay there for a long time looking at the ceiling. He thought about the father's eyes. He thought about his daughter asleep upstairs.</p>
+                    <p>Then he got up and drove.</p>
+                    <p>He didn't know where he was going until he remembered a conversation with Henderson, of all people, a few months back, offhand. The Velvet. It was private, you could pay with cash, use a fake name. No one would know. He'd dismissed it at the time and now it felt like it was pulling him in.</p>
+                    <p>When he arrived he was handed a tablet and used a fake name: Daniel. He checked the boxes and waited. He needed to feel the comfort of another person close to him. From Martin's perspective, this was something he'd have to pay for.</p>
+                    <p>When he came out he sat in his car for a long time. He felt a calm inside. Less pressurized. He thought about his daughter on the drive home. He told himself this was why he worked the hours he worked — so she never ended up somewhere like that.</p>
+                    <p>He went back the following week. And the week after. Twice a week became the rhythm. It was the only hour he looked forward to outside of his regular drives. He structured everything around it without acknowledging what he was doing.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>The incident report came through on a Friday. An inmate had been found unresponsive in a holding cell. Overdose, treated, released. He didn't recognize the name at first, then did — she'd been here before, years back, released early. The report was vague, only explained she was detained and appeared mildly intoxicated when brought in. She only had one next of kin. This could be buttoned up easily. He read it and signed. He told himself it was different from the injury. The circumstances were genuinely unclear. This was how situations were managed. He was not the cause of any of it.</p>
+                    <p>When he arrived home that night Susan had fallen asleep on the couch watching something, the blue light of the television moving across the wall. He checked on his daughter, already asleep. He stood in her doorway longer than necessary, looking at her. Then he went back out the door and drove.</p>
+                    <p>He went in carrying all of it. The injury. The report. The father's face. Years of small decisions that had compounded into a version of himself that he didn't recognize anymore. Was he really protecting his daughter? Was anyone really safe?</p>
+                    <p>When he came out the shame settled in behind it. He sat in the car for a few minutes. He had managed the facility for years without anyone seeing him come apart. He cried, quietly, in the parking lot, and then stopped, and started the car.</p>
+                    <p>On the drive home he thought about what he'd said at the door. Whether it would hold. Whether it mattered.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>The house was dark except for the television still going in the other room. He turned it off. He checked on his daughter again, standing in the doorway longer than he needed to. Then he went to bed. Susan didn't stir.</p>
+                    <p>He lay in the dark. His name had been in two press reports this week, both favorable. He thought about that. The prestige was still there. It was still worth something.</p>
+                    <p>He wouldn't go back to The Velvet. That was done. It served its purpose and it was done. He was in control of this the way he was in control of everything else.</p>
+                    <p>He closed his eyes.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-10">
+                <div class="chapter-number">10</div>
+                <div class="chapter-title">Parker</div>
+                <div class="chapter-subtitle">2037</div>
+                <div class="chapter-body">
+                    <p>Parker loved his Friday morning IV line. He felt like it was instantly powering him up. He looked forward to the cooling sensation moving up his arm as he reviewed the day's items. The bloodwork from Monday was in the queue. His inflammatory markers were down again. His telomere length was holding at a level his doctor described as anomalous for a man his age.</p>
+                    <p>His AI surfaced the next item. An upcoming press statement from the warden at the correctional facility where his formula was being manufactured. An inmate had been found unresponsive in custody, treated, released. Only one living next of kin — an employee at Parker's own brothel, The Velvet. From Parker's perspective, this was great PR. A whole family benefiting from his genius and if they brought up any kind of foul play, their positions made them easily controlled. He smirked as he squeezed a ball.</p>
+                    <p>He thought about the compound moving through his system. Six years ago his body had been declining, surrendering, compounding loss. He took action to stop that.</p>
+                    <p>He thought about what he could do with all this extra time. How much was still possible. The research, the hospitals, the infrastructure he'd built and was still building. He was not the same person he had been years ago. He was something new. Something closer to what he'd always known was possible if the right person had enough time.</p>
+                    <p>On the credenza behind his desk sat Scout's silver tag alongside the framed photograph. The cloning team in Geneva had sent an update last month. A new chip to store Scout's memories just arrived. They were ready to make the update whenever Parker was. He wanted to be there for it. For Scout's rebirth. So he told his agent to reply letting them know he'd be in Geneva next week and that he needed to be present when Scout woke.</p>
+                    <p>He left to head to the office feeling optimistic.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-11">
+                <div class="chapter-number">11</div>
+                <div class="chapter-title">Lily</div>
+                <div class="chapter-subtitle">2037</div>
+                <div class="chapter-body">
+                    <p>Lily received a letter in the mail. Official, from the facility. Next of kin notification. Alice's only living relative. She read it twice standing in the hallway. Then she put Sophia down and sat on the floor and read it a third time.</p>
+                    <p>She didn't cry right away.</p>
+                    <p>She thought about the last time she'd heard Alice's voice. The visit. The vending machine hamburger. That had been years ago. She'd called when she could and sometimes Alice picked up but most of the time she didn't. It cost Lily money no matter what. At some point she had to stop.</p>
+                    <p>The letter said Alice had been intoxicated when detained.</p>
+                    <p>She found what she could. Public records, press statements, the facility website. She remembered the name Alice had given her years ago in the visiting room — Steve, a guard, the arrangement, the early release. She looked for him on the staff page. A photo of the facility exterior with staff arranged in front of it, all smiling professionally. In the center of the photo she recognized a face. The photo didn't identify him as Daniel. It identified him as Martin Davis, Warden.</p>
+                    <p>She looked at it for a long time.</p>
+                    <p>She knew that face.</p>
+                    <p>He'd been coming to the Velvet for months. He stopped last week.</p>
+                    <p>Did he know? Was it a coincidence?</p>
+                    <p>The tears came slowly. She let them for a moment. Then she wiped her face. Lily felt exhausted. Lost. She felt like she and Daniel had a connection. He couldn't have known. Thousands of inmates walk through that facility every year. The warden likely doesn't know every single one of them. Even if he did, would he have recognized their similarities? They shared features, but looked different enough.</p>
+                    <p>She wanted to ask him more than anything. If she requested a meeting would he accept it? Would he know what she looked like before the visit? Would he have access to her driver's license and look beforehand? Lily's head filled with questions she couldn't get answers to.</p>
+                    <p>An unscheduled visit, she thought to herself. Show up unannounced and request to speak to someone the day of. A grieving family member. Maybe she'd run into Steve. A risk worth taking to Lily. She picked up her phone and called Hannah. She needed someone to watch the baby.</p>
+                </div>
+                <div class="section-break">* * *</div>
+                <div class="chapter-body">
+                    <p>When she arrived it was quiet. She approached the front desk where she normally checked in to see her sister. "Name?" the guard asked.</p>
+                    <p>"I don't have an appointment. My sister Alice died in custody recently. I was hoping I could speak to the warden?" Lily asked calmly.</p>
+                    <p>"You need an appointment," the guard answered flatly.</p>
+                    <p>"Is he here? Can I speak to him?" Lily asked.</p>
+                    <p>The guard rolled their eyes. "Look, you think the warden just gonna' take any ol' appointment?" Lily looked past the irritated guard and noticed Steve. She tilted her head.</p>
+                    <p>"That guard over there." She paused for a moment. "Steve. Let me talk to him." Lily said, gesturing toward Steve.</p>
+                    <p>The guard's eyebrows spiked upward. "Oh you think you can just talk to anyone up in here?"</p>
+                    <p>"Steve?" Lily shouted.</p>
+                    <p>Steve turned quickly and looked like a deer in headlights. He ran toward them. "Jenny, it's ok. I know her. What are you doing here?" Steve asked.</p>
+                    <p>"I want to talk to the warden. Can you help?"</p>
+                    <p>Steve looked at Lily's eyes, quickly shifted his eye contact down to the floor and said "Yeah. Let me get you a room and I'll call him over." Steve walked Lily over to a small room off to the side. He gestured toward the chair and said "Sit here, I'll go find him." He started to close the door and stopped himself. "Look, I'm real torn up about what happened. I cared about her. I…I…", he stopped himself and turned. "I don't know how long this will be." Then left.</p>
+                    <p>It took about thirty minutes. He came in alone. Head down at first. When he closed the door he looked up with a startled expression. She stared at him and said "You didn't know?"</p>
+                    <p>His mouth was open, in shock. He looked around him, aware he was being recorded. Cleared his throat, smiled, and said "It's nice to meet you. You were Alice's sister, is that right?" He stumbled to sit down in the chair.</p>
+                    <p>"That's right." She stated.</p>
+                    <p>"I'm deeply sorry for your loss. She was a model inmate. Good behavior." He said while holding his hands together, resting his elbows on the table. "We have her items available if you'd like to take them when you leave?" He looked at her, "Is that something you might want when you leave?"</p>
+                    <p>Lily looked into his eyes, she understood what "when you leave" said two times in a row meant. He wanted her gone. "Yes, I'd like that. Thank you."</p>
+                    <p>"Good. Again, my condolences." He stood up and turned quickly toward the door. "If there's anything you need, don't hesitate to reach out. If you don't mind, I have another meeting to attend to." He opened the door, turned and said "I'm glad we were able to meet." He smiled softly, then left.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-12">
+                <div class="chapter-number">12</div>
+                <div class="chapter-title">Parker</div>
+                <div class="chapter-subtitle">2037</div>
+                <div class="chapter-body">
+                    <p>Parker had known about the warden's visits to The Velvet for months.</p>
+                    <p>Martin Davis had been flagged the moment he walked into The Velvet. Parker operated a surveillance state, that's what made everything so efficient. Each weekly visit paid with cash transactions, and false name: Daniel. When Lily came to the prison, Parker was immediately notified.</p>
+                    <p>He had Davis brought in to his office the next day. Not the facility — Parker's office. The taxidermied dog in the corner.</p>
+                    <p>Davis came in, Parker invited him to sit down.</p>
+                    <p>"You need to cover your face more when you visit a brothel, Mr. Davis," Parker said while taking a sip of water staring at Martin. He set his drink down. "Security footage. The Velvet. You know I'm the owner, right? It's a new business under a private LLC. It's not widely known."</p>
+                    <p>Davis looked at Parker. He didn't say anything.</p>
+                    <p>"What do you want?" Davis asked.</p>
+                    <p>"You're easy enough to control, but I can't risk losing control of the prisons." Parker reached into his jacket pocket. He held a small amount of powder on the tip of his finger, barely visible. He leaned forward across the desk as if to say something further.</p>
+                    <p>He blew it into Davis's face.</p>
+                    <p>Martin fell out of his chair, putting his hands to his eyes, rubbing. He stumbled for a moment before passing out.</p>
+                    <p>Parker stood, straightened his jacket, and made a call.</p>
+                    <p>"Send him in," he said.</p>
+                    <p>He walked to the window, looked out at the city while he waited. He thought about the Geneva update. The new memory chip.</p>
+                    <p>The door opened behind him.</p>
+                    <p>He turned around and was met with a man that looked exactly like Daniel. "Take your position Monday morning. Your wife will be receiving these photographs of you at a brothel. Whether the marriage survives is your problem." Parker said.</p>
+                    <p>A pause. Then: "Understood."</p>
+                    <p>The voice was right. The cadence was right.</p>
+                    <p>"Dismissed," he said.</p>
+                </div>
+            </div>
+
+            <div class="chapter" id="chapter-13">
+                <div class="chapter-number">13</div>
+                <div class="chapter-title">Lily</div>
+                <div class="chapter-subtitle">2037</div>
+                <div class="chapter-body">
+                    <p>Sophia was just starting to roll over. When she landed back on her stomach she looked back at Lily smiling. They looked at each other for a moment.</p>
+                    <p>She thought about Alice. She thought about Alice a lot now. She didn't know what had happened to her sister inside that facility and she didn't think she'd ever know. Daniel was a dead end. She didn't know what she expected. She had feelings for him. She thought she'd feel more closure. Instead she just felt like a piece of her heart had been ripped out of her body.</p>
+                    <p>She wondered if he was okay.</p>
+                    <p>She laid there for a while with Sophia, smiling.</p>
+                </div>
+            </div>
+
+            <div class="chapter-end">* * *</div>
+
+        </div>
+    </main>
+
+    <script>
+        const chapters = document.querySelectorAll('.chapter');
+        const tocLinks = document.querySelectorAll('.toc-list a');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    tocLinks.forEach(link => {
+                        link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+                    });
+                }
+            });
+        }, { rootMargin: '-10% 0px -80% 0px' });
+
+        chapters.forEach(ch => observer.observe(ch));
+    </script>
+</body>
+</html>
