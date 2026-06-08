@@ -166,6 +166,55 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #111;
+            color: #fff;
+            padding: 18px 24px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.55;
+            max-width: 360px;
+            width: calc(100% - 48px);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 200;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .toast a {
+            color: #fff;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+        }
+
+        .toast-close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 1rem;
+            opacity: 0.5;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .toast-close:hover {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -193,7 +242,7 @@
                 <div class="tile-subtitle">In 2037 America all social safety nets have been replaced with for-profit systems. Prostitution legalized under the guise of ending sex trafficking. Lily, a young single mother, turns to a newly opened brothel to feed her newborn daughter.</div>
             </div>
 
-            <div class="tile">
+            <div class="tile" onclick="showToast('Curious to read Alien Rapture? Me too — help me get a book deal. <a href=\'https://www.linkedin.com/in/veronica-ward/\' target=\'_blank\'>Connect with me on LinkedIn.</a>')" style="cursor:pointer;">
                 <div class="tile-image">
                     <img src="alien-rapture.png" alt="Alien Rapture" style="width:100%; height:100%; object-fit:cover; display:block;">
                 </div>
@@ -201,7 +250,7 @@
                 <div class="tile-subtitle">A computational linguist in war-torn Tehran discovers she carries the bloodline of the Watchers, fallen beings who mated with early humans to create the Nephilim. She must choose between exposing the truth or unknowingly surrendering to a new world.</div>
             </div>
 
-            <div class="tile">
+            <div class="tile" onclick="showToast('Curious to read Part of Your World? Me too — help me get a book deal. <a href=\'https://www.linkedin.com/in/veronica-ward/\' target=\'_blank\'>Connect with me on LinkedIn.</a>')" style="cursor:pointer;">
                 <div class="tile-image">
                     <img src="part-of-your-world.png" alt="Part of your world" style="width:100%; height:100%; object-fit:cover; display:block;">
                 </div>
@@ -212,5 +261,19 @@
         </div>
     </main>
 
+    <div class="toast" id="toast">
+        <button class="toast-close" onclick="hideToast()">✕</button>
+        <span id="toast-msg"></span>
+    </div>
+
+    <script>
+        function showToast(msg) {
+            document.getElementById('toast-msg').innerHTML = msg;
+            document.getElementById('toast').classList.add('show');
+        }
+        function hideToast() {
+            document.getElementById('toast').classList.remove('show');
+        }
+    </script>
 </body>
 </html>
